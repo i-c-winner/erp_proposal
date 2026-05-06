@@ -5,6 +5,10 @@ app_description = "Создание коммерческих предложен�
 app_email = "d-belousov@hotmail.com"
 app_license = "mit"
 
+
+# your_app/hooks.py
+
+node_socketio = "proposal/socketio/index.js"
 # Apps
 # ------------------
 
