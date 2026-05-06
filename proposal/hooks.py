@@ -12,8 +12,45 @@ node_socketio = "proposal/socketio/index.js"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
+fixtures = [
+    # Custom Fields модуля Proposal
+    {
+        "dt": "Custom Field",
+        "filters": [["module", "=", "Proposal"]]
+    },
+    # Property Setters модуля Proposal
+    {
+        "dt": "Property Setter",
+        "filters": [["module", "=", "Proposal"]]
+    },
+    # Print Formats модуля Proposal
+    {
+        "dt": "Print Format",
+        "filters": [["module", "=", "Proposal"]]
+    },
+    # Client Scripts модуля Proposal
+    {
+        "dt": "Client Script",
+        "filters": [["module", "=", "Proposal"]]
+    },
+    # Server Scripts — фильтр по name (module не существует)
+    {
+        "dt": "Server Script",
+        "filters": [["reference_doctype", "like", "%"]]
+    },
+    # Workflow — фильтр по document_type
+    {
+        "dt": "Workflow",
+        "filters": [["is_active", "=", 1]]
+    },
+    # DocType модуля Proposal
+    {
+        "dt": "DocType",
+        "filters": [["module", "=", "Proposal"]]
+    },
+]
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
@@ -259,4 +296,3 @@ node_socketio = "proposal/socketio/index.js"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-
