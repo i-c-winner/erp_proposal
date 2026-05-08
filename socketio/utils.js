@@ -2,7 +2,7 @@ function get_url(socket, path) {
 	if (!path) {
 		path = "";
 	}
-	return "http://erp.ecklet.online:8080" + path;
+	return (process.env.FRAPPE_REALTIME_URL || "http://localhost:8000") + path;
 }
 
 module.exports = {
