@@ -1,0 +1,47 @@
+[
+ {
+  "doctype": "Workflow Action Master",
+  "workflow_action_name": "Submit Budget",
+  "name": "Submit Budget"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "workflow_action_name": "Approve Budget",
+  "name": "Approve Budget"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "workflow_action_name": "Reject Budget",
+  "name": "Reject Budget"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "workflow_action_name": "Submit Commercial",
+  "name": "Submit Commercial"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "workflow_action_name": "Approve Commercial",
+  "name": "Approve Commercial"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "workflow_action_name": "Reject Commercial",
+  "name": "Reject Commercial"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "workflow_action_name": "Final Approve",
+  "name": "Final Approve"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "workflow_action_name": "Archive",
+  "name": "Archive"
+ },
+ {
+  "doctype": "Workflow Action Master",
+  "workflow_action_name": "Return From Archive",
+  "name": "Return From Archive"
+ }
+]

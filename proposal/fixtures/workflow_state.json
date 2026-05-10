@@ -1,0 +1,50 @@
+[
+ {
+  "doctype": "Workflow State",
+  "workflow_state_name": "Budget Pending",
+  "name": "Budget Pending",
+  "style": "Warning"
+ },
+ {
+  "doctype": "Workflow State",
+  "workflow_state_name": "Budget Pending Approval",
+  "name": "Budget Pending Approval",
+  "style": "Warning"
+ },
+ {
+  "doctype": "Workflow State",
+  "workflow_state_name": "Budget Approved",
+  "name": "Budget Approved",
+  "style": "Info"
+ },
+ {
+  "doctype": "Workflow State",
+  "workflow_state_name": "Proposal Pending",
+  "name": "Proposal Pending",
+  "style": "Warning"
+ },
+ {
+  "doctype": "Workflow State",
+  "workflow_state_name": "Approval",
+  "name": "Approval",
+  "style": "Success"
+ },
+ {
+  "doctype": "Workflow State",
+  "workflow_state_name": "Final Approval",
+  "name": "Final Approval",
+  "style": "Success"
+ },
+ {
+  "doctype": "Workflow State",
+  "workflow_state_name": "Archived",
+  "name": "Archived",
+  "style": "Inverse"
+ },
+ {
+  "doctype": "Workflow State",
+  "workflow_state_name": "Rejected",
+  "name": "Rejected",
+  "style": "Danger"
+ }
+]

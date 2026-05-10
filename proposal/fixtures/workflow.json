@@ -1,1 +1,145 @@
-[]
+[
+ {
+  "doctype": "Workflow",
+  "document_type": "Commercial Proposal",
+  "enable_action_confirmation": 0,
+  "is_active": 1,
+  "module": "Proposal",
+  "name": "Commercial Proposal Approval Workflow",
+  "override_status": 0,
+  "send_email_alert": 0,
+  "states": [
+   {
+    "allow_edit": "Sales Manager",
+    "doc_status": "0",
+    "send_email": 0,
+    "state": "Budget Pending",
+    "update_field": "status",
+    "update_value": "Budget Pending"
+   },
+   {
+    "allow_edit": "Sales Master Manager",
+    "doc_status": "0",
+    "send_email": 0,
+    "state": "Budget Pending Approval",
+    "update_field": "status",
+    "update_value": "Budget Pending Approval"
+   },
+   {
+    "allow_edit": "Sales Manager",
+    "doc_status": "0",
+    "send_email": 0,
+    "state": "Budget Approved",
+    "update_field": "status",
+    "update_value": "Budget Approved"
+   },
+   {
+    "allow_edit": "Sales Master Manager",
+    "doc_status": "0",
+    "send_email": 0,
+    "state": "Proposal Pending",
+    "update_field": "status",
+    "update_value": "Proposal Pending"
+   },
+   {
+    "allow_edit": "Sales Master Manager",
+    "doc_status": "1",
+    "send_email": 0,
+    "state": "Approval",
+    "update_field": "status",
+    "update_value": "Approval"
+   },
+   {
+    "allow_edit": "Sales Manager",
+    "doc_status": "1",
+    "send_email": 0,
+    "state": "Final Approval",
+    "update_field": "status",
+    "update_value": "Final Approval"
+   },
+   {
+    "allow_edit": "Sales Manager",
+    "doc_status": "1",
+    "send_email": 0,
+    "state": "Archived",
+    "update_field": "status",
+    "update_value": "Archived"
+   },
+   {
+    "allow_edit": "Sales Manager",
+    "doc_status": "0",
+    "send_email": 0,
+    "state": "Rejected",
+    "update_field": "status",
+    "update_value": "Rejected"
+   }
+  ],
+  "transitions": [
+   {
+    "action": "Submit Budget",
+    "allow_self_approval": 1,
+    "allowed": "Sales Manager",
+    "next_state": "Budget Pending Approval",
+    "state": "Budget Pending"
+   },
+   {
+    "action": "Approve Budget",
+    "allow_self_approval": 1,
+    "allowed": "Sales Master Manager",
+    "next_state": "Budget Approved",
+    "state": "Budget Pending Approval"
+   },
+   {
+    "action": "Reject Budget",
+    "allow_self_approval": 1,
+    "allowed": "Sales Master Manager",
+    "next_state": "Rejected",
+    "state": "Budget Pending Approval"
+   },
+   {
+    "action": "Submit Commercial",
+    "allow_self_approval": 1,
+    "allowed": "Sales Manager",
+    "next_state": "Proposal Pending",
+    "state": "Budget Approved"
+   },
+   {
+    "action": "Approve Commercial",
+    "allow_self_approval": 1,
+    "allowed": "Sales Master Manager",
+    "next_state": "Approval",
+    "state": "Proposal Pending"
+   },
+   {
+    "action": "Reject Commercial",
+    "allow_self_approval": 1,
+    "allowed": "Sales Master Manager",
+    "next_state": "Rejected",
+    "state": "Proposal Pending"
+   },
+   {
+    "action": "Final Approve",
+    "allow_self_approval": 1,
+    "allowed": "Sales Manager",
+    "next_state": "Final Approval",
+    "state": "Approval"
+   },
+   {
+    "action": "Archive",
+    "allow_self_approval": 1,
+    "allowed": "Sales Manager",
+    "next_state": "Archived",
+    "state": "Final Approval"
+   },
+   {
+    "action": "Return From Archive",
+    "allow_self_approval": 1,
+    "allowed": "Sales Manager",
+    "next_state": "Final Approval",
+    "state": "Archived"
+   }
+  ],
+  "workflow_name": "Commercial Proposal Approval Workflow",
+  "workflow_state_field": "workflow_state"
+ }
+]

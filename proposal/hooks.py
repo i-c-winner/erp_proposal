@@ -15,6 +15,33 @@ node_socketio = "proposal/socketio/index.js"
 required_apps = ["erpnext"]
 
 fixtures = [
+    {
+        "dt": "Workflow State",
+        "filters": [["name", "in", [
+            "Budget Pending",
+            "Budget Pending Approval",
+            "Budget Approved",
+            "Proposal Pending",
+            "Approval",
+            "Final Approval",
+            "Archived",
+            "Rejected"
+        ]]]
+    },
+    {
+        "dt": "Workflow Action Master",
+        "filters": [["name", "in", [
+            "Submit Budget",
+            "Approve Budget",
+            "Reject Budget",
+            "Submit Commercial",
+            "Approve Commercial",
+            "Reject Commercial",
+            "Final Approve",
+            "Archive",
+            "Return From Archive"
+        ]]]
+    },
     # Custom Fields модуля Proposal
     {
         "dt": "Custom Field",
@@ -66,8 +93,9 @@ fixtures = [
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/proposal/css/proposal.css"
-# app_include_js = "/assets/proposal/js/proposal.js"
+app_include_js = ["/assets/designers/js/notification_badge.js"]
+app_include_css = ["/assets/designers/css/notification_badge.css"]
+
 
 # include js, css files in header of web template
 # web_include_css = "/assets/proposal/css/proposal.css"

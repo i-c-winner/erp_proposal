@@ -1,0 +1,25 @@
+.sidebar-notification .sidebar-item-icon {
+	position: relative;
+}
+
+.sidebar-notification .proposal-notification-dot {
+	position: absolute;
+	top: 5px;
+	right: 6px;
+	display: none;
+	width: 6px;
+	height: 6px;
+	margin: 0;
+	border-radius: 50%;
+	background: var(--orange-500);
+	z-index: 1;
+}
+
+.sidebar-notification.proposal-has-unread-notifications .proposal-notification-dot {
+	display: block;
+}
+
+.sidebar-notification .notifications-seen,
+.sidebar-notification .notifications-unseen {
+	display: none !important;
+}

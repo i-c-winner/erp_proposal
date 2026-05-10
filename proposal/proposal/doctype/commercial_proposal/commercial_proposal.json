@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2026-05-07 11:16:08.748765",
+ "creation": "2026-05-09 18:32:38.123222",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -47,39 +47,51 @@
    "fieldtype": "Data",
    "label": "Prefix",
    "options": "Commercial Proposal",
-   "reqd": 1
+   "read_only": 0,
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "work_type",
    "fieldtype": "Data",
    "label": "Work Type",
-   "reqd": 1
+   "read_only": 0,
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
    "options": "Customer",
-   "reqd": 1
+   "read_only": 0,
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Project",
-   "options": "Project"
+   "options": "Project",
+   "read_only": 0,
+   "set_only_once": 1
   },
   {
    "fieldname": "milestone",
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Milestone",
-   "reqd": 1
+   "read_only": 0,
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description",
-   "reqd": 1
+   "read_only": 0,
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "final_pdf",
@@ -87,15 +99,17 @@
    "label": "Final PDF"
   },
   {
+   "allow_on_submit": 1,
    "default": "Draft",
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Draft\nBudget Pending Approval\nBudget Approved\nProposal Pending Approval Approved\nRejected",
+   "options": "Draft\nBudget Pending\nBudget Pending Approval\nBudget Approved\nProposal Pending\nApproval\nFinal Approval\nArchived\nRejected",
    "print_hide": 1,
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "workflow_state",
    "fieldtype": "Data",
    "label": "Workflow state"
@@ -122,7 +136,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-08 09:38:45.258949",
+ "modified": "2026-05-09 18:44:21.441800",
  "modified_by": "Administrator",
  "module": "Proposal",
  "name": "Commercial Proposal",
@@ -137,6 +151,74 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Master Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Master Manager",
+   "select": 1,
    "share": 1,
    "submit": 1,
    "write": 1
