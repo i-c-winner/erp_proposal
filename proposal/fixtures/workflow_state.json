@@ -1,50 +1,74 @@
 [
  {
+  "docstatus": 0,
   "doctype": "Workflow State",
-  "workflow_state_name": "Budget Pending",
+  "icon": null,
+  "modified": "2026-05-09 20:41:45.311222",
   "name": "Budget Pending",
-  "style": "Warning"
+  "style": "Warning",
+  "workflow_state_name": "Budget Pending"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow State",
-  "workflow_state_name": "Budget Pending Approval",
+  "icon": null,
+  "modified": "2026-05-09 20:41:45.313083",
   "name": "Budget Pending Approval",
-  "style": "Warning"
+  "style": "Warning",
+  "workflow_state_name": "Budget Pending Approval"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow State",
-  "workflow_state_name": "Budget Approved",
+  "icon": null,
+  "modified": "2026-05-09 20:41:45.314595",
   "name": "Budget Approved",
-  "style": "Info"
+  "style": "Info",
+  "workflow_state_name": "Budget Approved"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow State",
-  "workflow_state_name": "Proposal Pending",
+  "icon": null,
+  "modified": "2026-05-09 20:41:45.316084",
   "name": "Proposal Pending",
-  "style": "Warning"
+  "style": "Warning",
+  "workflow_state_name": "Proposal Pending"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow State",
-  "workflow_state_name": "Approval",
+  "icon": null,
+  "modified": "2026-05-09 20:41:45.317573",
   "name": "Approval",
-  "style": "Success"
+  "style": "Success",
+  "workflow_state_name": "Approval"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow State",
-  "workflow_state_name": "Final Approval",
+  "icon": null,
+  "modified": "2026-05-09 20:41:45.319033",
   "name": "Final Approval",
-  "style": "Success"
+  "style": "Success",
+  "workflow_state_name": "Final Approval"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow State",
-  "workflow_state_name": "Archived",
+  "icon": null,
+  "modified": "2026-05-09 20:41:45.320492",
   "name": "Archived",
-  "style": "Inverse"
+  "style": "Inverse",
+  "workflow_state_name": "Archived"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow State",
-  "workflow_state_name": "Rejected",
+  "icon": null,
+  "modified": "2026-05-09 20:41:45.321955",
   "name": "Rejected",
-  "style": "Danger"
+  "style": "Danger",
+  "workflow_state_name": "Rejected"
  }
 ]

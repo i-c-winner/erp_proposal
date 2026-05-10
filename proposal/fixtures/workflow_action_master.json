@@ -1,47 +1,65 @@
 [
  {
+  "docstatus": 0,
   "doctype": "Workflow Action Master",
-  "workflow_action_name": "Submit Budget",
-  "name": "Submit Budget"
+  "modified": "2026-05-09 20:41:45.293713",
+  "name": "Submit Budget",
+  "workflow_action_name": "Submit Budget"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow Action Master",
-  "workflow_action_name": "Approve Budget",
-  "name": "Approve Budget"
+  "modified": "2026-05-09 20:41:45.295564",
+  "name": "Approve Budget",
+  "workflow_action_name": "Approve Budget"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow Action Master",
-  "workflow_action_name": "Reject Budget",
-  "name": "Reject Budget"
+  "modified": "2026-05-09 20:41:45.296925",
+  "name": "Reject Budget",
+  "workflow_action_name": "Reject Budget"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow Action Master",
-  "workflow_action_name": "Submit Commercial",
-  "name": "Submit Commercial"
+  "modified": "2026-05-09 20:41:45.298278",
+  "name": "Submit Commercial",
+  "workflow_action_name": "Submit Commercial"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow Action Master",
-  "workflow_action_name": "Approve Commercial",
-  "name": "Approve Commercial"
+  "modified": "2026-05-09 20:41:45.299680",
+  "name": "Approve Commercial",
+  "workflow_action_name": "Approve Commercial"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow Action Master",
-  "workflow_action_name": "Reject Commercial",
-  "name": "Reject Commercial"
+  "modified": "2026-05-09 20:41:45.301039",
+  "name": "Reject Commercial",
+  "workflow_action_name": "Reject Commercial"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow Action Master",
-  "workflow_action_name": "Final Approve",
-  "name": "Final Approve"
+  "modified": "2026-05-09 20:41:45.302431",
+  "name": "Final Approve",
+  "workflow_action_name": "Final Approve"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow Action Master",
-  "workflow_action_name": "Archive",
-  "name": "Archive"
+  "modified": "2026-05-09 20:41:45.303802",
+  "name": "Archive",
+  "workflow_action_name": "Archive"
  },
  {
+  "docstatus": 0,
   "doctype": "Workflow Action Master",
-  "workflow_action_name": "Return From Archive",
-  "name": "Return From Archive"
+  "modified": "2026-05-09 20:41:45.305187",
+  "name": "Return From Archive",
+  "workflow_action_name": "Return From Archive"
  }
 ]
