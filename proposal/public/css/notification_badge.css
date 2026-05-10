@@ -2,7 +2,7 @@
 	position: relative;
 }
 
-.sidebar-notification .proposal-notification-dot {
+.sidebar-notification .proposal-notification-badge {
 	position: absolute;
 	top: 5px;
 	right: 6px;
@@ -15,7 +15,7 @@
 	z-index: 1;
 }
 
-.sidebar-notification.proposal-has-unread-notifications .proposal-notification-dot {
+.sidebar-notification.proposal-has-unread-notifications .proposal-notification-badge {
 	display: block;
 }
 

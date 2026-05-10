@@ -1,9 +1,9 @@
 (function () {
-	const PATCH_FLAG = "__proposal_notification_indicator_patch_v5";
-	const SIDEBAR_PATCH_FLAG = "__proposal_sidebar_notification_patch_v5";
-	const VIEW_PATCH_FLAG = "__proposal_notification_view_patch_v5";
-	const REALTIME_FLAG = "__proposal_notification_realtime_v5";
-	const INITIAL_SYNC_FLAG = "__proposal_notification_initial_sync_v5";
+	const PATCH_FLAG = "__proposal_notification_badge_patch_v1";
+	const SIDEBAR_PATCH_FLAG = "__proposal_sidebar_notification_badge_patch_v1";
+	const VIEW_PATCH_FLAG = "__proposal_notification_badge_view_patch_v1";
+	const REALTIME_FLAG = "__proposal_notification_badge_realtime_v1";
+	const INITIAL_SYNC_FLAG = "__proposal_notification_badge_initial_sync_v1";
 	const UNREAD_CHANGED_EVENT = "proposal_unread_notifications_changed";
 	let unread_notification_count = 0;
 	let unread_check_in_progress = false;
@@ -20,8 +20,8 @@
 		$button.addClass("notifications-icon");
 
 		const $icon = $button.find(".sidebar-item-icon");
-		if (!$icon.find(".proposal-notification-dot").length) {
-			$icon.append(`<span class="proposal-notification-dot"></span>`);
+		if (!$icon.find(".proposal-notification-badge").length) {
+			$icon.append(`<span class="proposal-notification-badge"></span>`);
 		}
 
 		apply_indicator_state();
@@ -89,7 +89,7 @@
 		const $button = $(".sidebar-notification");
 
 		$button.toggleClass("proposal-has-unread-notifications", has_unread_notifications);
-		$button.find(".proposal-notification-dot").toggle(has_unread_notifications);
+		$button.find(".proposal-notification-badge").toggle(has_unread_notifications);
 		$button.find(".notifications-seen, .notifications-unseen").hide();
 		$button.find(".sidebar-item-icon").removeClass("indicator orange");
 	}
@@ -327,7 +327,7 @@
 				server: r.message,
 				has_button: Boolean($button.length),
 				has_dropdown: Boolean($dropdown.length),
-				dot_visible: $(".sidebar-notification .proposal-notification-dot").is(":visible"),
+				badge_visible: $(".sidebar-notification .proposal-notification-badge").is(":visible"),
 				unread_notification_count,
 				has_unread_notifications: unread_notification_count > 0,
 			}));
