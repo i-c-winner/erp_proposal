@@ -11,8 +11,9 @@
 	height: 6px;
 	margin: 0;
 	border-radius: 50%;
-	background: var(--orange-500);
+	background: var(--orange-500, #ff8b40);
 	z-index: 1;
+	pointer-events: none;
 }
 
 .sidebar-notification.proposal-has-unread-notifications .proposal-notification-badge {

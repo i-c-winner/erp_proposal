@@ -1,131 +1,116 @@
 (function () {
+	if (typeof window === "undefined") return;
+	if (typeof window.jQuery !== "function") return;
+	if (!window.frappe) return;
+
+	const $ = window.jQuery;
+
 	const PATCH_FLAG = "__proposal_notification_badge_patch_v1";
 	const SIDEBAR_PATCH_FLAG = "__proposal_sidebar_notification_badge_patch_v1";
 	const VIEW_PATCH_FLAG = "__proposal_notification_badge_view_patch_v1";
 	const REALTIME_FLAG = "__proposal_notification_badge_realtime_v1";
 	const INITIAL_SYNC_FLAG = "__proposal_notification_badge_initial_sync_v1";
+	const SETUP_FLAG = "__proposal_notification_badge_setup_v1";
+	const OBSERVER_KEY = "__proposal_notification_badge_observer_v1";
+	const REALTIME_TIMER_KEY = "__proposal_notification_realtime_timer_v1";
+	const OBSERVER_TIMER_KEY = "__proposal_notification_observer_timer_v1";
 	const UNREAD_CHANGED_EVENT = "proposal_unread_notifications_changed";
+	const MAX_REALTIME_TRIES = 30;
+	const MAX_OBSERVER_TRIES = 20;
+
 	let unread_notification_count = 0;
 	let unread_check_in_progress = false;
 	let pending_unread_check = false;
+	let enhance_scheduled = false;
+	let realtime_tries = 0;
+	let observer_tries = 0;
 
-	function enhance_notification_button(root) {
-		const $root = root ? $(root) : $(document);
-		const $button = $root
-			.find(".sidebar-notification")
-			.add($root.filter(".sidebar-notification"));
+	function is_desk_user() {
+		return Boolean(
+			window.frappe &&
+				frappe.boot &&
+				frappe.session &&
+				frappe.session.user &&
+				frappe.session.user !== "Guest"
+		);
+	}
 
+	function safe_cint(value) {
+		const n = parseInt(value, 10);
+		return isNaN(n) ? 0 : n;
+	}
+
+	function enhance_notification_button() {
+		const $button = $(".sidebar-notification");
 		if (!$button.length) return;
 
 		$button.addClass("notifications-icon");
 
 		const $icon = $button.find(".sidebar-item-icon");
-		if (!$icon.find(".proposal-notification-badge").length) {
-			$icon.append(`<span class="proposal-notification-badge"></span>`);
+		if ($icon.length && !$icon.find(".proposal-notification-badge").length) {
+			$icon.append('<span class="proposal-notification-badge" aria-hidden="true"></span>');
 		}
 
 		apply_indicator_state();
 	}
 
-	function ensure_notification_button() {
-		const $section = $(".standard-items-sections").first();
-		if (!$section.length || $(".sidebar-notification").length) return;
-
-		const bell = frappe.utils?.icon
-			? frappe.utils.icon("bell", "sm", "", "", "text-ink-gray-7 current-color", true)
-			: "";
-		const $button = $(`
-			<div class="standard-sidebar-item sidebar-notification notifications-icon">
-				<a class="item-anchor">
-					<span class="sidebar-item-icon text-ink-gray-7">${bell}</span>
-					<span class="sidebar-item-label">${__("Notification")}</span>
-				</a>
-			</div>
-		`);
-
-		$section.append($button);
-		enhance_notification_button($section);
-		bind_notification_button($section);
-	}
-
-	function ensure_notifications_instance() {
-		const $section = $(".standard-items-sections").first();
-		if (!$section.length || frappe.session?.user === "Guest") return;
-		if (!frappe.boot?.desk_settings?.notifications || !frappe.ui?.Notifications) return;
-		if (frappe.app?.sidebar?.notifications?.tabs?.notifications) return;
-
-		frappe.app = frappe.app || {};
-		frappe.app.sidebar = frappe.app.sidebar || {};
-		frappe.app.sidebar.notifications = new frappe.ui.Notifications({
-			full_height: true,
-			wrapper: $section,
-		});
-		enhance_notification_button($section);
-	}
-
-	function bind_notification_button(root) {
-		const $root = root ? $(root) : $(document);
-		$root
-			.off("click.proposal-notification-indicator", ".sidebar-notification")
-			.on("click.proposal-notification-indicator", ".sidebar-notification", () => {
-				const $dropdown = $(".standard-items-sections .dropdown-notifications").first();
-				if ($dropdown.length) {
-					$dropdown.toggleClass("hidden");
-				}
-
-				const $section = $(".standard-items-sections").first();
-				setTimeout(() => {
-					const is_open = !$section.find(".dropdown-notifications").hasClass("hidden");
-					if (is_open) {
-						refresh_notifications_dropdown();
-					}
-					check_unread_notifications({ refresh_dropdown: is_open });
-				});
-			});
+	function schedule_enhance() {
+		if (enhance_scheduled) return;
+		enhance_scheduled = true;
+		const fn = () => {
+			enhance_scheduled = false;
+			try {
+				enhance_notification_button();
+			} catch (e) {
+				console.error("proposal notification badge:", e);
+			}
+		};
+		if (typeof window.requestAnimationFrame === "function") {
+			window.requestAnimationFrame(fn);
+		} else {
+			setTimeout(fn, 16);
+		}
 	}
 
 	function apply_indicator_state() {
-		const has_unread_notifications = unread_notification_count > 0;
-		const $button = $(".sidebar-notification");
-
-		$button.toggleClass("proposal-has-unread-notifications", has_unread_notifications);
-		$button.find(".proposal-notification-badge").toggle(has_unread_notifications);
-		$button.find(".notifications-seen, .notifications-unseen").hide();
-		$button.find(".sidebar-item-icon").removeClass("indicator orange");
+		const has_unread = unread_notification_count > 0;
+		$(".sidebar-notification").toggleClass("proposal-has-unread-notifications", has_unread);
 	}
 
 	function set_unread_notification_count(count) {
-		unread_notification_count = cint(count);
-		enhance_notification_button();
+		unread_notification_count = safe_cint(count);
 		apply_indicator_state();
 	}
 
 	function get_notifications_view() {
-		return frappe.app?.sidebar?.notifications?.tabs?.notifications;
+		return frappe.app && frappe.app.sidebar && frappe.app.sidebar.notifications
+			? frappe.app.sidebar.notifications.tabs && frappe.app.sidebar.notifications.tabs.notifications
+			: null;
 	}
 
 	function refresh_notifications_dropdown() {
-		const notifications_view = get_notifications_view();
-		if (!notifications_view?.render_notifications_dropdown) return;
+		const view = get_notifications_view();
+		if (!view || typeof view.render_notifications_dropdown !== "function") return;
 
-		frappe.call({
-			method: "proposal.proposal.doctype.commercial_proposal.commercial_proposal.get_notification_logs",
-			args: { limit: notifications_view.max_length || 20 },
-		}).then((r) => {
-			if (!r.message) return;
-
-			notifications_view.dropdown_items = r.message.notification_logs || [];
-			frappe.update_user_info(r.message.user_info || {});
-			patch_notifications_view(notifications_view);
-			notifications_view.container.empty();
-			notifications_view.render_notifications_dropdown();
-		});
-	}
-
-	function sync_indicator_state(delay = 700) {
-		setTimeout(() => {
-			handle_unread_notifications_changed();
-		}, delay);
+		frappe
+			.call({
+				method:
+					"proposal.proposal.doctype.commercial_proposal.commercial_proposal.get_notification_logs",
+				args: { limit: view.max_length || 20 },
+			})
+			.then(
+				(r) => {
+					if (!r || !r.message) return;
+					view.dropdown_items = r.message.notification_logs || [];
+					if (r.message.user_info && typeof frappe.update_user_info === "function") {
+						frappe.update_user_info(r.message.user_info);
+					}
+					patch_notifications_view(view);
+					view.container.empty();
+					view.render_notifications_dropdown();
+				},
+				() => {}
+			);
 	}
 
 	function patch_notifications_view(view) {
@@ -147,10 +132,12 @@
 		patch_notifications_view(get_notifications_view());
 	}
 
+	function sync_indicator_state(delay) {
+		setTimeout(handle_unread_notifications_changed, typeof delay === "number" ? delay : 700);
+	}
+
 	function handle_unread_notifications_changed() {
-		check_unread_notifications({
-			refresh_dropdown: is_notifications_dropdown_open(),
-		});
+		check_unread_notifications({ refresh_dropdown: is_notifications_dropdown_open() });
 	}
 
 	function is_notifications_dropdown_open() {
@@ -159,30 +146,26 @@
 	}
 
 	function patch_notifications() {
-		if (!frappe.ui?.Notifications || frappe.ui.Notifications.prototype[PATCH_FLAG]) {
-			return;
-		}
-
+		if (!frappe.ui || !frappe.ui.Notifications) return;
 		const proto = frappe.ui.Notifications.prototype;
-		const original_make_tab_view = proto.make_tab_view;
+		if (proto[PATCH_FLAG]) return;
+
 		const original_make = proto.make;
+		const original_make_tab_view = proto.make_tab_view;
 		const original_mark_all_as_read = proto.mark_all_as_read;
 
 		proto.make = function () {
-			enhance_notification_button(this.wrapper);
 			const result = original_make.apply(this, arguments);
-			enhance_notification_button(this.wrapper);
+			schedule_enhance();
 			return result;
 		};
 
 		proto.make_tab_view = function (item) {
-			if (item.id !== "notifications") {
-				return original_make_tab_view.apply(this, arguments);
+			const result = original_make_tab_view.apply(this, arguments);
+			if (item && item.id === "notifications") {
+				patch_notifications_view(this.tabs[item.id]);
 			}
-
-			let tabView = new item.view(item.el, this.wrapper, this.notification_settings);
-			patch_notifications_view(tabView);
-			this.tabs[item.id] = tabView;
+			return result;
 		};
 
 		if (typeof original_mark_all_as_read === "function") {
@@ -197,43 +180,14 @@
 	}
 
 	function patch_sidebar() {
-		if (!frappe.ui?.Sidebar || frappe.ui.Sidebar.prototype[SIDEBAR_PATCH_FLAG]) {
-			return;
-		}
-
+		if (!frappe.ui || !frappe.ui.Sidebar) return;
 		const proto = frappe.ui.Sidebar.prototype;
-		const original_setup_notifications = proto.setup_notifications;
+		if (proto[SIDEBAR_PATCH_FLAG]) return;
+
 		const original_add_standard_items = proto.add_standard_items;
-
-		proto.setup_notifications = function () {
-			if (frappe.boot.desk_settings.notifications && frappe.session.user !== "Guest") {
-				this.notifications = new frappe.ui.Notifications({
-					full_height: true,
-					wrapper: this.$standard_items_sections,
-				});
-				enhance_notification_button(this.$standard_items_sections);
-				return;
-			}
-
-			return original_setup_notifications.apply(this, arguments);
-		};
-
 		proto.add_standard_items = function () {
 			const result = original_add_standard_items.apply(this, arguments);
-			enhance_notification_button(this.$standard_items_sections);
-
-			this.$standard_items_sections
-				.off("click.proposal-notification-indicator", ".sidebar-notification")
-				.on("click.proposal-notification-indicator", ".sidebar-notification", () => {
-					setTimeout(() => {
-						const is_open = !this.wrapper.find(".dropdown-notifications").hasClass("hidden");
-						if (is_open) {
-							refresh_notifications_dropdown();
-						}
-						check_unread_notifications({ refresh_dropdown: is_open });
-					});
-				});
-
+			schedule_enhance();
 			return result;
 		};
 
@@ -243,76 +197,132 @@
 	function setup_realtime() {
 		if (frappe[REALTIME_FLAG]) return;
 		if (!frappe.realtime) {
-			setTimeout(setup_realtime, 300);
+			if (realtime_tries >= MAX_REALTIME_TRIES) return;
+			realtime_tries += 1;
+			frappe[REALTIME_TIMER_KEY] = setTimeout(setup_realtime, 500);
 			return;
 		}
-
 		frappe.realtime.on(UNREAD_CHANGED_EVENT, handle_unread_notifications_changed);
-		frappe.realtime.on("proposal_notification", handle_unread_notifications_changed);
-		frappe.realtime.on("notification", handle_unread_notifications_changed);
-		frappe.realtime.on("indicator_hide", handle_unread_notifications_changed);
 		frappe[REALTIME_FLAG] = true;
 	}
 
-	function check_unread_notifications(options = {}) {
-		if (frappe.session?.user === "Guest") return;
+	function check_unread_notifications(options) {
+		options = options || {};
+		if (!is_desk_user()) return;
 		if (unread_check_in_progress) {
 			pending_unread_check = true;
 			return;
 		}
 
 		unread_check_in_progress = true;
+		const done = () => {
+			unread_check_in_progress = false;
+			if (pending_unread_check) {
+				pending_unread_check = false;
+				setTimeout(handle_unread_notifications_changed, 50);
+			}
+		};
 		frappe
 			.call(
 				"proposal.proposal.doctype.commercial_proposal.commercial_proposal.get_unread_notification_count"
 			)
-			.then((r) => {
-				set_unread_notification_count(r.message);
-				if (options.refresh_dropdown) {
-					refresh_notifications_dropdown();
-				}
-			})
-			.finally(() => {
-				unread_check_in_progress = false;
-				if (pending_unread_check) {
-					pending_unread_check = false;
-					setTimeout(handle_unread_notifications_changed, 50);
-				}
-			});
+			.then(
+				(r) => {
+					if (r) set_unread_notification_count(r.message);
+					if (options.refresh_dropdown) refresh_notifications_dropdown();
+					done();
+				},
+				() => done()
+			);
 	}
 
 	function setup_initial_sync() {
 		if (frappe[INITIAL_SYNC_FLAG]) return;
-
 		frappe[INITIAL_SYNC_FLAG] = true;
 		handle_unread_notifications_changed();
 	}
 
-	function setup_read_state_handlers() {
-		$(document)
-			.off("click.proposal-notification-read-state")
-			.on(
-				"click.proposal-notification-read-state",
-				".mark-all-read, .mark-as-read, .recent-item.notification-item",
-				() => {
-					sync_indicator_state();
-				}
-			);
+	function bind_dropdown_open_listener() {
+		if (frappe[SETUP_FLAG]) return;
+
+		$(document).on(
+			"click.proposal-notification-indicator",
+			".sidebar-notification",
+			function () {
+				setTimeout(function () {
+					const is_open = is_notifications_dropdown_open();
+					if (is_open) refresh_notifications_dropdown();
+					check_unread_notifications({ refresh_dropdown: is_open });
+				}, 0);
+			}
+		);
+
+		$(document).on(
+			"click.proposal-notification-read-state",
+			".mark-all-read, .mark-as-read, .recent-item.notification-item",
+			function () {
+				sync_indicator_state();
+			}
+		);
+
+		frappe[SETUP_FLAG] = true;
 	}
 
-	function setup() {
-		if (!window.frappe) return;
+	function watch_sidebar() {
+		if (frappe[OBSERVER_KEY]) return;
+		const target =
+			document.querySelector(".body-sidebar .standard-items-sections") ||
+			document.querySelector(".body-sidebar");
 
-		patch_notifications();
-		patch_sidebar();
-		ensure_notification_button();
-		ensure_notifications_instance();
-		patch_existing_notifications_view();
-		setup_realtime();
-		setup_initial_sync();
-		setup_read_state_handlers();
-		enhance_notification_button();
-		bind_notification_button();
+		if (!target) {
+			if (observer_tries >= MAX_OBSERVER_TRIES) return;
+			observer_tries += 1;
+			frappe[OBSERVER_TIMER_KEY] = setTimeout(watch_sidebar, 500);
+			return;
+		}
+
+		if (typeof window.MutationObserver !== "function") return;
+		const observer = new MutationObserver((mutations) => {
+			for (const m of mutations) {
+				for (const node of m.addedNodes) {
+					if (
+						node &&
+						node.nodeType === 1 &&
+						((node.matches && node.matches(".sidebar-notification")) ||
+							(node.querySelector && node.querySelector(".sidebar-notification")))
+					) {
+						schedule_enhance();
+						return;
+					}
+				}
+			}
+		});
+		observer.observe(target, { childList: true, subtree: true });
+		frappe[OBSERVER_KEY] = observer;
+	}
+
+	function safe_setup() {
+		if (!is_desk_user()) return;
+		try {
+			patch_notifications();
+			patch_sidebar();
+			patch_existing_notifications_view();
+			bind_dropdown_open_listener();
+			setup_realtime();
+			setup_initial_sync();
+			schedule_enhance();
+		} catch (e) {
+			console.error("proposal notification badge setup:", e);
+		}
+	}
+
+	function safe_watch_sidebar() {
+		if (!is_desk_user()) return;
+		try {
+			watch_sidebar();
+		} catch (e) {
+			console.error("proposal notification badge watch:", e);
+		}
 	}
 
 	window.proposal_notification_debug = function () {
@@ -323,28 +333,18 @@
 				"proposal.proposal.doctype.commercial_proposal.commercial_proposal.get_notification_debug"
 			)
 			.then((r) => ({
-				user: frappe.session?.user,
-				server: r.message,
+				user: frappe.session && frappe.session.user,
+				server: r && r.message,
 				has_button: Boolean($button.length),
 				has_dropdown: Boolean($dropdown.length),
-				badge_visible: $(".sidebar-notification .proposal-notification-badge").is(":visible"),
+				badge_visible: $button.hasClass("proposal-has-unread-notifications"),
 				unread_notification_count,
-				has_unread_notifications: unread_notification_count > 0,
 			}));
 	};
 
-	function watch_sidebar() {
-		if (!document.body || document.body.__proposal_notification_observer) return;
-
-		const observer = new MutationObserver(() => {
-			enhance_notification_button();
-			apply_indicator_state();
-		});
-		observer.observe(document.body, { childList: true, subtree: true });
-		document.body.__proposal_notification_observer = observer;
-	}
-
-	setup();
-	watch_sidebar();
-	$(document).on("startup sidebar_setup", setup);
+	$(function () {
+		safe_setup();
+		safe_watch_sidebar();
+	});
+	$(document).on("startup sidebar_setup", safe_setup);
 })();
