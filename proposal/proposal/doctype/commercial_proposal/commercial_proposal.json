@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2026-05-09 18:32:38.123222",
+ "creation": "2026-05-09 20:41:45.154345",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -14,10 +14,11 @@
   "project",
   "milestone",
   "description",
-  "final_pdf",
   "status",
   "total_amount",
   "budget_lines",
+  "budget",
+  "final_pdf",
   "workflow_state",
   "amended_from"
  ],
@@ -47,7 +48,6 @@
    "fieldtype": "Data",
    "label": "Prefix",
    "options": "Commercial Proposal",
-   "read_only": 0,
    "reqd": 1,
    "set_only_once": 1
   },
@@ -55,7 +55,6 @@
    "fieldname": "work_type",
    "fieldtype": "Data",
    "label": "Work Type",
-   "read_only": 0,
    "reqd": 1,
    "set_only_once": 1
   },
@@ -64,7 +63,6 @@
    "fieldtype": "Link",
    "label": "Customer",
    "options": "Customer",
-   "read_only": 0,
    "reqd": 1,
    "set_only_once": 1
   },
@@ -73,7 +71,6 @@
    "fieldtype": "Link",
    "label": "Project",
    "options": "Project",
-   "read_only": 0,
    "set_only_once": 1
   },
   {
@@ -81,7 +78,6 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Milestone",
-   "read_only": 0,
    "reqd": 1,
    "set_only_once": 1
   },
@@ -89,14 +85,14 @@
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description",
-   "read_only": 0,
    "reqd": 1,
    "set_only_once": 1
   },
   {
    "fieldname": "final_pdf",
    "fieldtype": "Attach",
-   "label": "Final PDF"
+   "label": "Final PDF",
+   "permlevel": 1
   },
   {
    "allow_on_submit": 1,
@@ -117,26 +113,36 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "label": "Total Amount"
+   "label": "Total Amount",
+   "permlevel": 1
   },
   {
    "fieldname": "budget_lines",
    "fieldtype": "Table",
    "label": "budget_lines",
-   "options": "Budget Lines"
+   "options": "Budget Lines",
+   "permlevel": 1
   },
   {
    "fieldname": "currency",
    "fieldtype": "Link",
    "label": "Currency",
    "options": "Currency"
+  },
+  {
+   "fieldname": "budget",
+   "fieldtype": "Data",
+   "label": "Budget",
+   "hidden": 1,
+   "permlevel": 1,
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-09 18:44:21.441800",
+ "modified": "2026-05-11 22:26:14.522905",
  "modified_by": "Administrator",
  "module": "Proposal",
  "name": "Commercial Proposal",

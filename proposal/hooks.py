@@ -92,7 +92,11 @@ fixtures = [
 # 		"route": "/proposal",
 # 		"has_permission": "proposal.api.permission.has_app_permission"
 # 	}
-# ]
+#
+
+
+
+
 
 # Includes in <head>
 # ------------------
