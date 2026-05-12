@@ -98,8 +98,15 @@ fixtures = [
 # ------------------
 
 # include js, css files in header of desk.html
-app_include_css = "/assets/proposal/css/notification_badge.css"
-app_include_js = "/assets/proposal/js/notification_badge.js"
+app_include_css = [
+    "/assets/proposal/css/notification_badge.css",
+    "/assets/proposal/css/libs/xspreadsheet.css",
+]
+app_include_js = [
+    "/assets/proposal/js/notification_badge.js",
+    "/assets/proposal/js/libs/xlsx.full.min.js",
+    "/assets/proposal/js/libs/xspreadsheet.js",
+]
 
 
 # include js, css files in header of web template

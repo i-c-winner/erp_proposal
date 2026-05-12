@@ -37,29 +37,6 @@ function hide_budget_from_attachments(frm) {
 	frm.attachments.refresh();
 }
 
-// ─── Library loader ─────────────────────────────────────────────────────────
-
-function load_script(src) {
-	return new Promise((resolve, reject) => {
-		if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
-		const s = document.createElement("script");
-		s.src = src;
-		s.onload = resolve;
-		s.onerror = () => reject(new Error("Failed to load: " + src));
-		document.head.appendChild(s);
-	});
-}
-
-function load_style(href) {
-	return new Promise((resolve) => {
-		if (document.querySelector(`link[href="${href}"]`)) { resolve(); return; }
-		const l = document.createElement("link");
-		l.rel = "stylesheet";
-		l.href = href;
-		l.onload = resolve;
-		document.head.appendChild(l);
-	});
-}
 
 function show_loader(msg) {
 	$("#bse-loader").remove();
@@ -94,15 +71,9 @@ function hide_loader() {
 // ─── Editor ──────────────────────────────────────────────────────────────────
 
 async function open_budget_editor(frm) {
-	show_loader(__("Loading editor…"));
+	show_loader(__("Loading file…"));
 
 	try {
-		await load_style("/assets/proposal/css/libs/xspreadsheet.css");
-		await load_script("/assets/proposal/js/libs/xlsx.full.min.js");
-		await load_script("/assets/proposal/js/libs/xspreadsheet.js");
-
-		show_loader(__("Loading file…"));
-
 		const TIMEOUT_MS = 30000;
 		const timeout_p = new Promise((_, reject) =>
 			setTimeout(() => reject(new Error("Server request timed out (30s)")), TIMEOUT_MS)
