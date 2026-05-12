@@ -109,35 +109,10 @@ class CommercialProposal(Document):
 # ─── Budget helpers ──────────────────────────────────────────────────────────
 
 def _build_template_b64():
-    """Generate the default budget Excel template and return as base64 string."""
-    import openpyxl
-    from openpyxl.styles import Font, PatternFill, Alignment
-
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Budget"
-
-    header_font = Font(bold=True)
-    header_fill = PatternFill(start_color="D9E1F2", end_color="D9E1F2", fill_type="solid")
-
-    for ci, h in enumerate(["Description", "Total Amount", "Currency", "Notes"], start=1):
-        cell = ws.cell(row=1, column=ci, value=h)
-        cell.font = header_font
-        cell.fill = header_fill
-        cell.alignment = Alignment(horizontal="center")
-
-    ws["A2"] = "Total"
-    ws["B2"] = 0        # → total_amount
-    ws["C2"] = "UZS"    # → currency
-
-    ws.column_dimensions["A"].width = 20
-    ws.column_dimensions["B"].width = 18
-    ws.column_dimensions["C"].width = 12
-    ws.column_dimensions["D"].width = 30
-
-    buf = BytesIO()
-    wb.save(buf)
-    return base64.b64encode(buf.getvalue()).decode("ascii")
+    """Read the budget Excel template from the app's templates directory and return as base64 string."""
+    template_path = frappe.get_app_path("proposal", "templates", "budget_template.xlsx")
+    with open(template_path, "rb") as f:
+        return base64.b64encode(f.read()).decode("ascii")
 
 
 def _read_cells_from_b64(content_b64):
