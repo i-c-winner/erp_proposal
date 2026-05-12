@@ -171,13 +171,23 @@ def get_budget_file_content(docname):
     row = frappe.db.get_value(
         "Commercial Proposal", docname, ["budget_content", "budget"], as_dict=True
     )
-    if not row or not row.budget_content:
-        frappe.throw(frappe._("No budget file attached."))
+    if row and row.budget_content:
+        return {
+            "content_b64": row.budget_content,
+            "file_name": row.budget or "budget.xlsx",
+        }
 
-    return {
-        "content_b64": row.budget_content,
-        "file_name": row.budget or "budget.xlsx",
-    }
+    # No content stored yet — attach the default template on the fly
+    content_b64 = _build_template_b64()
+    safe_name = docname.replace("/", "-")
+    file_name = f"budget_{safe_name}.xlsx"
+    frappe.db.set_value(
+        "Commercial Proposal",
+        docname,
+        {"budget": file_name, "budget_content": content_b64},
+        update_modified=False,
+    )
+    return {"content_b64": content_b64, "file_name": file_name}
 
 
 

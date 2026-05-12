@@ -70,36 +70,36 @@ function hide_loader() {
 
 // ─── Editor ──────────────────────────────────────────────────────────────────
 
-async function open_budget_editor(frm) {
+function open_budget_editor(frm) {
 	show_loader(__("Loading file…"));
 
-	try {
-		const TIMEOUT_MS = 30000;
-		const timeout_p = new Promise((_, reject) =>
-			setTimeout(() => reject(new Error("Server request timed out (30s)")), TIMEOUT_MS)
-		);
-		const call_p = frappe.call({
-			method: "proposal.proposal.doctype.commercial_proposal.commercial_proposal.get_budget_file_content",
-			args: { docname: frm.doc.name },
-		});
-
-		const res = await Promise.race([call_p, timeout_p]);
-		if (!res || !res.message) throw new Error("Empty response from server");
-
-		const binary = atob(res.message.content_b64);
-		const bytes = new Uint8Array(binary.length);
-		for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-
-		const workbook = XLSX.read(bytes, { type: "array" });
-		render_editor(frm, workbook);
-	} catch (err) {
-		hide_loader();
-		frappe.msgprint({
-			title: __("Error"),
-			message: __("Could not open the budget file: ") + err.message,
-			indicator: "red",
-		});
-	}
+	frappe.call({
+		method: "proposal.proposal.doctype.commercial_proposal.commercial_proposal.get_budget_file_content",
+		args: { docname: frm.doc.name },
+		callback: function (res) {
+			if (!res || !res.message || !res.message.content_b64) {
+				hide_loader();
+				return;
+			}
+			try {
+				const binary = atob(res.message.content_b64);
+				const bytes = new Uint8Array(binary.length);
+				for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+				const workbook = XLSX.read(bytes, { type: "array" });
+				render_editor(frm, workbook);
+			} catch (err) {
+				hide_loader();
+				frappe.msgprint({
+					title: __("Error"),
+					message: __("Could not open the budget file: ") + err.message,
+					indicator: "red",
+				});
+			}
+		},
+		error: function () {
+			hide_loader();
+		},
+	});
 }
 
 function render_editor(frm, workbook) {
