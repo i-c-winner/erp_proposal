@@ -71,6 +71,17 @@ function hide_loader() {
 // ─── Editor ──────────────────────────────────────────────────────────────────
 
 function open_budget_editor(frm) {
+	if (typeof XLSX === "undefined") {
+		frappe.msgprint({
+			title: __("Library not loaded"),
+			message: __(
+				"The XLSX library is missing. Run <code>bench build --app proposal</code> inside the backend container and reload the page."
+			),
+			indicator: "red",
+		});
+		return;
+	}
+
 	show_loader(__("Loading file…"));
 
 	frappe.call({
