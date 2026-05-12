@@ -18,6 +18,7 @@
   "total_amount",
   "budget_lines",
   "budget",
+  "budget_content",
   "final_pdf",
   "workflow_state",
   "amended_from"
@@ -133,6 +134,14 @@
    "fieldname": "budget",
    "fieldtype": "Data",
    "label": "Budget",
+   "hidden": 1,
+   "permlevel": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "budget_content",
+   "fieldtype": "Long Text",
+   "label": "Budget Content",
    "hidden": 1,
    "permlevel": 1,
    "read_only": 1
